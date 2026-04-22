@@ -1533,5 +1533,110 @@ HOUSING_REP_CONFIG = {
             itemName = "Galactic Void-Scarred Banner",
             requiredStanding = "Revered"
         }}
+    },
+    [2764] = {
+        label = "Prey: Season 1",
+        kind = "renown",
+        expansion = "Midnight",
+        vendor = {
+            npcID = 258181,
+            name = "Construct Ali'a",
+            zone = "Silvermoon City",
+            subzone = "Astalor's Sanctum",
+            uiMapID = 2393,
+            x = 55.82,
+            y = 65.92
+        },
+        rewards = {{
+            itemID = 265794,
+            itemName = "Preyseeker's Plinth",
+            requiredStanding = "Renown 4"
+        }, {
+            itemID = 265795,
+            itemName = "Preyseeker's Ornate Plinth",
+            requiredStanding = "Renown 8"
+        }}  
+    },
+    [2742] = {
+        label = "Delves: Season 1",
+        kind = "renown",
+        expansion = "Midnight",
+        vendor = {
+            npcID = 242399,
+            name = "Telemancer Astrandis",
+            zone = "Silvermoon City",
+            subzone = "Delve Headquarters",
+            uiMapID = 2393,
+            x = 52.52,
+            y = 78.89
+        },
+        rewards = {{
+            itemID = 263996,
+            itemName = "Twilight Tabernacle",
+            requiredStanding = "Renown 1"
+        }, {
+            itemID = 263994,
+            itemName = "Fungal Chest",
+            requiredStanding = "Renown 2"
+        },  {
+            itemID = 264175,
+            itemName = "Amani Strongbox",
+            requiredStanding = "Renown 3"
+        }, {
+            itemID = 264170,
+            itemName = "Ancient Kaldorei Coffer",
+            requiredStanding = "Renown 4"
+        }, {
+            itemID = 264008,
+            itemName = "Root-Wrapped Reliquary",
+            requiredStanding = "Renown 7"
+        }, {
+            itemID = 264007,
+            itemName = "Corewarden's Spoils",
+            requiredStanding = "Renown 8"
+        }, {
+            itemID = 263995,
+            itemName = "Delver's Bountiful Coffer",
+            requiredStanding = "Renown 10"
+        }}   
+    },
+    [2792] = {
+        label = "Ritual Sites",
+        kind = "renown",
+        expansion = "Midnight",
+        vendor = {
+            npcID = 255495,
+            name = "Rae'ana",
+            zone = "Silvermoon City",
+            subzone = "The Bazaar",
+            uiMapID = 2393,
+            x = 47.6,
+            y = 50.6
+        },
+        rewards = {{
+            itemID = 273159,
+            itemName = "Void Elf Scribe's Desk",
+            requiredStanding = "Renown 3"
+        }, {
+            itemID = 273135,
+            itemName = "Void Elf Floating Desk",
+            requiredStanding = "Renown 3"
+        }, {
+            itemID = 273142,
+            itemName = "Runic Parchment",
+            requiredStanding = "Renown 3"
+        }, {
+            itemID = 273157,
+            itemName = "Void Flame Candle",
+            requiredStanding = "Renown 3"
+        }, {
+            itemID = 273147,
+            itemName = "Void Inkwell",
+            requiredStanding = "Renown 3"
+        }, {
+            itemID = 271158,
+            itemName = "Dark Obelisk",
+            requiredStanding = "Renown 7"
+        },}
     }
 }
