@@ -1534,29 +1534,6 @@ HOUSING_REP_CONFIG = {
             requiredStanding = "Revered"
         }}
     },
-    [2764] = {
-        label = "Prey: Season 1",
-        kind = "renown",
-        expansion = "Midnight",
-        vendor = {
-            npcID = 258181,
-            name = "Construct Ali'a",
-            zone = "Silvermoon City",
-            subzone = "Astalor's Sanctum",
-            uiMapID = 2393,
-            x = 55.82,
-            y = 65.92
-        },
-        rewards = {{
-            itemID = 265794,
-            itemName = "Preyseeker's Plinth",
-            requiredStanding = "Renown 4"
-        }, {
-            itemID = 265795,
-            itemName = "Preyseeker's Ornate Plinth",
-            requiredStanding = "Renown 8"
-        }}  
-    },
     [2808] = {
         label = "Preyhunter's Journey",
         kind = "renown",
@@ -1615,49 +1592,6 @@ HOUSING_REP_CONFIG = {
             itemName = "Crimson Crystal Column",
             requiredStanding = "Renown 10"
         }}  
-    },
-    [2742] = {
-        label = "Delves: Season 1",
-        kind = "renown",
-        expansion = "Midnight",
-        vendor = {
-            npcID = 242399,
-            name = "Telemancer Astrandis",
-            zone = "Silvermoon City",
-            subzone = "Delve Headquarters",
-            uiMapID = 2393,
-            x = 52.52,
-            y = 78.89
-        },
-        rewards = {{
-            itemID = 263996,
-            itemName = "Twilight Tabernacle",
-            requiredStanding = "Renown 1"
-        }, {
-            itemID = 263994,
-            itemName = "Fungal Chest",
-            requiredStanding = "Renown 2"
-        },  {
-            itemID = 264175,
-            itemName = "Amani Strongbox",
-            requiredStanding = "Renown 3"
-        }, {
-            itemID = 264170,
-            itemName = "Ancient Kaldorei Coffer",
-            requiredStanding = "Renown 4"
-        }, {
-            itemID = 264008,
-            itemName = "Root-Wrapped Reliquary",
-            requiredStanding = "Renown 7"
-        }, {
-            itemID = 264007,
-            itemName = "Corewarden's Spoils",
-            requiredStanding = "Renown 8"
-        }, {
-            itemID = 263995,
-            itemName = "Delver's Bountiful Coffer",
-            requiredStanding = "Renown 10"
-        }}   
     },
     [2796] = {
         label = "Delves: Season 2",
