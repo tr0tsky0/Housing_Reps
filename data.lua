@@ -1557,6 +1557,65 @@ HOUSING_REP_CONFIG = {
             requiredStanding = "Renown 8"
         }}  
     },
+    [2808] = {
+        label = "Preyhunter's Journey",
+        kind = "renown",
+        expansion = "Midnight",
+        vendor = {
+            npcID = 258181,
+            name = "Construct Ali'a",
+            zone = "Silvermoon City",
+            subzone = "Astalor's Sanctum",
+            uiMapID = 2393,
+            x = 55.82,
+            y = 65.92
+        },
+        rewards = {{
+            itemID = 278123,
+            itemName = "Sturdy Silvermoon Crate Lid",
+            requiredStanding = "Renown 1"
+        }, {
+            itemID = 278126,
+            itemName = "Mysterious Sin'dorei Candlestick",
+            requiredStanding = "Renown 2"
+        }, {
+            itemID = 278130,
+            itemName = "Gilded Silvermoon Compass",
+            requiredStanding = "Renown 3"
+        }, {
+            itemID = 265794,
+            itemName = "Preyseeker's Plinth",
+            requiredStanding = "Renown 4"
+        }, {
+            itemID = 278134,
+            itemName = "Sturdy Silvermoon Crate",
+            requiredStanding = "Renown 4"
+        }, {
+            itemID = 250870,
+            itemName = "Crimson Crystal Fragment",
+            requiredStanding = "Renown 5"
+        }, {
+            itemID = 278145,
+            itemName = "Stonecarved Sin'dorei Jar",
+            requiredStanding = "Renown 6"
+        }, {
+            itemID = 278148,
+            itemName = "Adorned Sin'dorei Satchel",
+            requiredStanding = "Renown 7"
+        }, {
+            itemID = 265795,
+            itemName = "Preyseeker's Ornate Plinth",
+            requiredStanding = "Renown 8"
+        }, {
+            itemID = 278151,
+            itemName = "Blood Knight's Decorative Shield",
+            requiredStanding = "Renown 9"
+        }, {
+            itemID = 250868,
+            itemName = "Crimson Crystal Column",
+            requiredStanding = "Renown 10"
+        }}  
+    },
     [2742] = {
         label = "Delves: Season 1",
         kind = "renown",
@@ -1600,6 +1659,37 @@ HOUSING_REP_CONFIG = {
             requiredStanding = "Renown 10"
         }}   
     },
+    [2796] = {
+        label = "Delves: Season 2",
+        kind = "renown",
+        expansion = "Midnight",
+        vendor = {
+            npcID = 242399,
+            name = "Telemancer Astrandis",
+            zone = "Silvermoon City",
+            subzone = "Delve Headquarters",
+            uiMapID = 2393,
+            x = 52.52,
+            y = 78.89
+        },
+        rewards = {{
+            itemID = 265386,
+            itemName = "Fortified Amani Awning",
+            requiredStanding = "Renown 1"
+        }, {
+            itemID = 265033,
+            itemName = "Zul'Aman Brazier Post",
+            requiredStanding = "Renown 4"
+        }, {
+            itemID = 267207,
+            itemName = "Amani Territorial Totem",
+            requiredStanding = "Renown 6"
+        }, {
+            itemID = 272360,
+            itemName = "Ula'tek Ritual Stone",
+            requiredStanding = "Renown 8"
+        }}
+    },
     [2792] = {
         label = "Ritual Sites",
         kind = "renown",
@@ -1638,5 +1728,119 @@ HOUSING_REP_CONFIG = {
             itemName = "Dark Obelisk",
             requiredStanding = "Renown 7"
         },}
+    },
+    [2772] = {
+        label = "Zul'jarra's Forces",
+        kind = "renown",
+        expansion = "Midnight",
+        vendor = {
+            npcID = 268228,
+            name = "Jan'sari the Watchful",
+            zone = "The Coiled Isle",
+            subzone = "Tokka's Landing",
+            uiMapID = 2512,
+            x = 58.76,
+            y = 45.942
+        },
+        rewards = {{
+            itemID = 249765,
+            itemName = "Amani Supply Sack",
+            requiredStanding = "Renown 3"
+        }, {
+            itemID = 263316,
+            itemName = "Amani Storage Crate",
+            requiredStanding = "Renown 3"
+        }, {
+            itemID = 264331,
+            itemName = "Amani Wayfarer's Torch",
+            requiredStanding = "Renown 3"
+        }, {
+            itemID = 269779,
+            itemName = "Fanged Scaleskin Pouch",
+            requiredStanding = "Renown 7"
+        }, {
+            itemID = 269778,
+            itemName = "Stitched Blisterfang Bag",
+            requiredStanding = "Renown 7"
+        }, {
+            itemID = 277280,
+            itemName = "Vilescar Weapon Rack",
+            requiredStanding = "Renown 7"
+        }, {
+            itemID = 277271,
+            itemName = "Wrapped Scaleskin Urn",
+            requiredStanding = "Renown 11"
+        }, {
+            itemID = 277273,
+            itemName = "Cracked Vileskin Urn",
+            requiredStanding = "Renown 11"
+        }, {
+            itemID = 277275,
+            itemName = "Charmed Blisterskin Urn",
+            requiredStanding = "Renown 11"
+        }, {
+            itemID = 264271,
+            itemName = "Amani Ritual Totem",
+            requiredStanding = "Renown 15"
+        }, {
+            itemID = 276459,
+            itemName = "Amani Ritual Candles",
+            requiredStanding = "Renown 15"
+        }, {
+            itemID = 276457,
+            itemName = "Amani Worship Candle",
+            requiredStanding = "Renown 15"
+        }, {
+            itemID = 267377,
+            itemName = "Ula'tek Ritual Monolith",
+            requiredStanding = "Renown 18"
+        }, {
+            itemID = 271177,
+            itemName = "Opened Serpentine Reliquary",
+            requiredStanding = "Renown 18"
+        }, {
+            itemID = 277323,
+            itemName = "Sealed Serpentine Reliquary",
+            requiredStanding = "Renown 18"
+        }}
+    },     
+    [2773] = {
+        label = "Captain Tokka",
+        kind = "friendship",
+        expansion = "Midnight",
+        vendor = {
+            npcID = 257598,
+            name = "Second Mate Sluggs",
+            zone = "The Coiled Isle",
+            subzone = "Tokka's Folly",
+            uiMapID = 2512,
+            x = 51.65,
+            y = 49.83
+        },
+        rewards = {{
+            itemID = 277923,
+            itemName = "Aged Tortollan Scroll Case",
+            requiredStanding = "Doomed Sailor"
+        }, {
+            itemID = 277927,
+            itemName = "Yellowed Kelp Pile",
+            requiredStanding = "Doomed Sailor"
+        }, {
+            itemID = 277931,
+            itemName = "Hanging Yellowed Kelp",
+            requiredStanding = "Cursed Angler"
+        }, {
+            itemID = 277929,
+            itemName = "Rustic Fishing Sack",
+            requiredStanding = "Venom Trawler"
+        }, {
+            itemID = 277925,
+            itemName = "Blue Tortollan Signpost",
+            requiredStanding = "Venom Trawler"
+        }, {
+            itemID = 277921,
+            itemName = "Traditional Tortollan Tent",
+            requiredStanding = "Bloodsworn Crew"
+        }}
     }
 }

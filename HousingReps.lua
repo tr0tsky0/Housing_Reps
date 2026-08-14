@@ -76,6 +76,11 @@ local FRIENDSHIP_LEVEL_FROM_NAME = {
     Trendsetter = 4,
     Host = 5,
     Luminary = 6,
+    -- Captain Tokka (Midnight)
+    ["Doomed Sailor"] = 2,
+    ["Cursed Angler"] = 3,
+    ["Venom Trawler"] = 4,
+    ["Bloodsworn Crew"] = 5
 }
 
 local function GetFriendshipTierFromLabel(label)
