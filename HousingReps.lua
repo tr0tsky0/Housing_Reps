@@ -1,4 +1,5 @@
 local addonName, HR = ...
+local L = HR.L
 
 HousingRepsDB = HousingRepsDB or {}
 
@@ -172,6 +173,8 @@ local function HR_SnapshotRepsForCurrentChar()
                     if rec.friendshipTier == 0 then
                         rec.friendshipTier = GetFriendshipTierFromLabel(rec.reactionText)
                     end
+
+                    HR.RememberFriendshipRankName(factionID, rec.friendshipTier, rec.reactionText)
                 end
             end
 
@@ -258,7 +261,7 @@ function HR.GetBestDisplayInfo(factionID)
     local display = {}
 
     if cfg.kind == "renown" then
-        display.standingName = "Renown " .. (bestRec.renownLevel or 0)
+        display.standingName = HR.GetRenownLabel(bestRec.renownLevel or 0)
         display.progressText = "" -- renown doesn't need fractional progress
 
     elseif cfg.kind == "friendship" then
@@ -267,7 +270,7 @@ function HR.GetBestDisplayInfo(factionID)
         if not name then
             -- Fallback for old DB entries that only have the raw number
             local standing = bestRec.standing or 0
-            name = "Standing " .. standing
+            name = (L["Standing %d"]):format(standing)
         end
 
         display.standingName = name
@@ -276,7 +279,7 @@ function HR.GetBestDisplayInfo(factionID)
     else
         -- Standard faction
         local reaction = bestRec.reaction or 0
-        local name = _G["FACTION_STANDING_LABEL" .. reaction] or ("Standing " .. reaction)
+        local name = HR.GetStandingLabel(reaction)
 
         local cur = bestRec.current or 0
         local cThr = bestRec.currentThreshold or 0
@@ -601,27 +604,27 @@ function HR.GetRewardProgress(factionID, reward)
     end
 
     local requiredStanding = reward.requiredStanding
+    local unknown = UNKNOWN or L["Unknown"]
 
     -- Renown-style
     if cfg.kind == "renown" or (requiredStanding and requiredStanding:match("^Renown")) then
         local requiredRenown = parseRenownRequired(requiredStanding) or 0
 
-        local current = "Renown 0"
+        local current = HR.GetRenownLabel(0)
         if C_MajorFactions and C_MajorFactions.GetMajorFactionData then
             local data = C_MajorFactions.GetMajorFactionData(factionID)
             if data and data.renownLevel then
-                current = string.format("Renown %d", data.renownLevel)
+                current = HR.GetRenownLabel(data.renownLevel)
             end
         end
 
-        local needed = requiredRenown > 0 and string.format("Renown %d", requiredRenown) or
-                           (requiredStanding or "Renown ?")
+        local needed = HR.GetRenownLabel(requiredRenown > 0 and requiredRenown or nil)
         return current, needed
     end
 
     -- Friendship-style (Tillers etc.)
     if cfg.kind == "friendship" then
-        local current = "Unknown"
+        local current = unknown
         if C_GossipInfo and C_GossipInfo.GetFriendshipReputation then
             local info = C_GossipInfo.GetFriendshipReputation(factionID)
             if info then
@@ -630,20 +633,22 @@ function HR.GetRewardProgress(factionID, reward)
             end
         end
 
-        local needed = requiredStanding or "Best Friend"
+        local requiredTier = parseFriendshipRequired(reward)
+        local needed = requiredTier and HR.GetFriendshipRankName(factionID, requiredTier, requiredStanding) or
+                           requiredStanding or unknown
         return current, needed
     end
 
     -- Standard reputation
-    local current = "Unknown"
+    local current = unknown
     if C_Reputation and C_Reputation.GetFactionDataByID then
         local data = C_Reputation.GetFactionDataByID(factionID)
         if data and data.reaction then
-            current = _G["FACTION_STANDING_LABEL" .. data.reaction] or current
+            current = HR.GetStandingLabel(data.reaction)
         end
     end
 
-    local needed = requiredStanding or "Exalted"
+    local needed = HR.GetStandingLabel(REACTION_FROM_NAME[requiredStanding] or 8)
     return current, needed
 end
 
@@ -782,7 +787,7 @@ HR_CreateMinimapButton = function()
     button:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
         GameTooltip:AddLine("Housing Reps", 1, 0.82, 0)
-        GameTooltip:AddLine("Left-click to toggle window", 1, 1, 1)
+        GameTooltip:AddLine(L["Left-click to toggle window"], 1, 1, 1)
         GameTooltip:Show()
     end)
 
@@ -829,10 +834,31 @@ local f = CreateFrame("Frame")
 f:RegisterEvent("PLAYER_LOGIN")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("PLAYER_LOGOUT")
+f:RegisterEvent("GET_ITEM_INFO_RECEIVED")
 
-f:SetScript("OnEvent", function(self, event)
+-- Item names arrive asynchronously; batch them into one rebuild
+local itemRefreshPending = false
+
+f:SetScript("OnEvent", function(self, event, ...)
+    if event == "GET_ITEM_INFO_RECEIVED" then
+        local _, success = ...
+        if success and not itemRefreshPending and HR.frame and HR.frame:IsShown() then
+            itemRefreshPending = true
+            C_Timer.After(0.2, function()
+                itemRefreshPending = false
+                if HR.frame:IsShown() and HR.BuildUI then
+                    HR.BuildUI()
+                end
+            end)
+        end
+        return
+    end
+
     if event == "PLAYER_LOGIN" or event == "PLAYER_ENTERING_WORLD" then
         HR_EnsureSettings()
+        if event == "PLAYER_LOGIN" and HR.ApplySettingsToUI then
+            HR.ApplySettingsToUI()
+        end
         HR_SnapshotRepsForCurrentChar()
 
         if HousingRepsDB.settings.minimap.enabled ~= false then
@@ -860,7 +886,7 @@ local function HR_SlashHandler(msg)
         local cur = HousingRepsDB.settings.minimap.enabled ~= false
         HR_SetMinimapButtonEnabled(not cur)
 
-        print(string.format("|cff33ff99Housing Reps|r: Minimap button %s.", (not cur) and "enabled" or "disabled"))
+        print("|cff33ff99Housing Reps|r: " .. ((not cur) and L["Minimap button enabled."] or L["Minimap button disabled."]))
         return
     end
 

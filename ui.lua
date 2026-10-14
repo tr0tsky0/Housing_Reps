@@ -1,23 +1,21 @@
 local addonName, HR = ...
-
-HousingRepsDB = HousingRepsDB or {}
-HousingRepsDB.settings = HousingRepsDB.settings or {
-    accountWide = true,
-    hideCompleted = false
-}
+local L = HR.L
 
 HR.expanded = HR.expanded or {} -- per-faction
 HR.expansionExpanded = HR.expansionExpanded or {} -- per-expansion
 
+-- Values are the client's expansion index (LE_EXPANSION_*), which both sorts the
+-- groups and picks the localized EXPANSION_NAME<n> header. Keep gaps (e.g. 8 is
+-- Shadowlands, which has no housing reps) rather than renumbering.
 local EXPANSION_ORDER = {
-    ["Classic"] = 1,
-    ["The Burning Crusade"] = 2,
-    ["Wrath of the Lich King"] = 3,
-    ["Cataclysm"] = 4,
-    ["Mists of Pandaria"] = 5,
-    ["Warlords of Draenor"] = 6,
-    ["Legion"] = 7,
-    ["Battle for Azeroth"] = 8,
+    ["Classic"] = 0,
+    ["The Burning Crusade"] = 1,
+    ["Wrath of the Lich King"] = 2,
+    ["Cataclysm"] = 3,
+    ["Mists of Pandaria"] = 4,
+    ["Warlords of Draenor"] = 5,
+    ["Legion"] = 6,
+    ["Battle for Azeroth"] = 7,
     ["Dragonflight"] = 9,
     ["The War Within"] = 10,
     ["Midnight"] = 11
@@ -25,6 +23,26 @@ local EXPANSION_ORDER = {
 
 local function GetExpansionOrder(exp)
     return EXPANSION_ORDER[exp] or 99 -- unknown/Anniversary/etc go at the end
+end
+
+local function GetExpansionDisplayName(exp)
+    return HR.GetExpansionName(EXPANSION_ORDER[exp], exp)
+end
+
+local function GetVendorName(v)
+    return HR.GetNPCName(v.npcID, v.name)
+end
+
+local function GetVendorLocation(v)
+    local parts = {}
+    local zone = HR.GetMapName(v.uiMapID, v.zone)
+    if zone then
+        table.insert(parts, zone)
+    end
+    if v.subzone then
+        table.insert(parts, v.subzone)
+    end
+    return parts
 end
 
 local function HR_GetVendors(cfg)
@@ -75,19 +93,14 @@ local function HR_AddVendorTooltipLines(cfg, reward)
     end
 
     GameTooltip:AddLine(" ")
-    GameTooltip:AddLine("Vendor", 1, 0.82, 0)
+    GameTooltip:AddLine(L["Vendor"], 1, 0.82, 0)
 
-    if v.name then
-        GameTooltip:AddLine(v.name, 0.9, 0.9, 0.9)
+    local vendorName = GetVendorName(v)
+    if vendorName then
+        GameTooltip:AddLine(vendorName, 0.9, 0.9, 0.9)
     end
 
-    local locParts = {}
-    if v.zone then
-        table.insert(locParts, v.zone)
-    end
-    if v.subzone then
-        table.insert(locParts, v.subzone)
-    end
+    local locParts = GetVendorLocation(v)
 
     if #locParts > 0 then
         GameTooltip:AddLine(table.concat(locParts, " - "), 0.8, 0.8, 0.8)
@@ -99,30 +112,30 @@ local function HR_AddVendorTooltipLines(cfg, reward)
 
     -- Hint: manual purchase override
     GameTooltip:AddLine(" ")
-    GameTooltip:AddLine("Alt-Click to mark reward as purchased", 0.8, 0.8, 0.8)
+    GameTooltip:AddLine(L["Alt-Click to mark reward as purchased"], 0.8, 0.8, 0.8)
 end
 
 local function HR_SetVendorWaypoint(cfg)
     if not cfg or not cfg.vendor then
-        print("|cff33ff99Housing Reps|r: No vendor data for this faction yet.")
+        print("|cff33ff99Housing Reps|r: " .. L["No vendor data for this faction yet."])
         return
     end
 
     local vendors = HR_GetVendors(cfg)
     if not vendors or not vendors[1] then
-        print("|cff33ff99Housing Reps|r: This vendor doesn’t have waypoint coords yet.")
+        print("|cff33ff99Housing Reps|r: " .. L["This vendor doesn't have waypoint coords yet."])
         return
     end
 
     local v = vendors[1] -- default to first vendor (Thalyssra for Nightfallen)
 
     if not v.uiMapID or not v.x or not v.y then
-        print("|cff33ff99Housing Reps|r: This vendor doesn’t have waypoint coords yet.")
+        print("|cff33ff99Housing Reps|r: " .. L["This vendor doesn't have waypoint coords yet."])
         return
     end
 
     if not C_Map or not UiMapPoint or not C_Map.SetUserWaypoint then
-        print("|cff33ff99Housing Reps|r: Waypoints aren’t supported on this client.")
+        print("|cff33ff99Housing Reps|r: " .. L["Waypoints aren't supported on this client."])
         return
     end
 
@@ -136,22 +149,15 @@ local function HR_SetVendorWaypoint(cfg)
         C_SuperTrack.SetSuperTrackedUserWaypoint(true)
     end
 
-    local name = v.name or "vendor"
-    local whereParts = {}
-
-    if v.zone then
-        table.insert(whereParts, v.zone)
-    end
-    if v.subzone then
-        table.insert(whereParts, v.subzone)
-    end
+    local name = GetVendorName(v) or L["vendor"]
+    local whereParts = GetVendorLocation(v)
 
     local whereText = ""
     if #whereParts > 0 then
         whereText = " (" .. table.concat(whereParts, " - ") .. ")"
     end
 
-    print(string.format("|cff33ff99Housing Reps|r: Waypoint set to %s%s.", name, whereText))
+    print("|cff33ff99Housing Reps|r: " .. string.format(L["Waypoint set to %s%s."], name, whereText))
 end
 
 -------------------------------------------------------
@@ -184,45 +190,43 @@ frame:SetBackdrop({
 
 frame.title = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 frame.title:SetPoint("TOP", 0, -10)
-frame.title:SetText("Housing Reputations")
+frame.title:SetText(L["Housing Reputations"])
 
 local close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
 close:SetPoint("TOPRIGHT", -5, -5)
 
--- Ensure settings table exists
-HousingRepsDB = HousingRepsDB or {}
-HousingRepsDB.settings = HousingRepsDB.settings or {}
-local settings = HousingRepsDB.settings
+-- Checkbox state comes from SavedVariables, which don't exist yet while this file
+-- runs. Always go through the live HousingRepsDB table (never a cached local), and
+-- let HR.ApplySettingsToUI set the initial ticks once the saved data has loaded.
 
 -- Hide Completed toggle
 local hideChk = CreateFrame("CheckButton", nil, frame, "UICheckButtonTemplate")
 hideChk:SetPoint("TOPLEFT", 10, -30)
-hideChk.text:SetText("Hide Completed")
-hideChk:SetChecked(settings.hideCompleted and true or false)
+hideChk.text:SetText(L["Hide Completed"])
 HR.hideCompletedCheck = hideChk
 
 hideChk:SetScript("OnClick", function(self)
-    settings.hideCompleted = self:GetChecked() and true or false
+    HousingRepsDB.settings.hideCompleted = self:GetChecked() and true or false
     HR.BuildUI()
 end)
 
 -- Account-Wide Progress checkbox
 local accountChk = CreateFrame("CheckButton", nil, frame, "UICheckButtonTemplate")
-accountChk:SetPoint("LEFT", hideChk, "RIGHT", 120, 0)
-accountChk.text:SetText("Account-Wide")
-
-local accountDefault = settings.accountWide
-if accountDefault == nil then
-    accountDefault = true -- default ON
-end
-accountChk:SetChecked(accountDefault)
+accountChk:SetPoint("LEFT", hideChk.text, "RIGHT", 20, 0) -- follows the label, whose length varies by locale
+accountChk.text:SetText(L["Account-Wide"])
 HR.accountWideCheck = accountChk
 
 accountChk:SetScript("OnClick", function(self)
-    settings.accountWide = self:GetChecked() and true or false
+    HousingRepsDB.settings.accountWide = self:GetChecked() and true or false
     ResolveHousingFactions()
     HR.BuildUI()
 end)
+
+function HR.ApplySettingsToUI()
+    local settings = HousingRepsDB.settings
+    hideChk:SetChecked(settings.hideCompleted == true)
+    accountChk:SetChecked(settings.accountWide ~= false) -- default ON
+end
 
 -------------------------------------------------------
 -- Scrollframe
@@ -321,7 +325,7 @@ function HR.CreateRepLine(factionID, y)
     local data = (C_Reputation and C_Reputation.GetFactionDataByID) and C_Reputation.GetFactionDataByID(factionID) or
                      nil
 
-    local name = (data and data.name) or (cfg and cfg.label) or ("Faction " .. tostring(factionID))
+    local name = HR.GetFactionName(factionID)
     local standingID = data and data.reaction or 0
     local current = data and data.currentStanding
     local curThresh = data and data.currentReactionThreshold
@@ -373,40 +377,22 @@ function HR.CreateRepLine(factionID, y)
     ----------------------------------------------------------------
     -- Standing / progress text: standard vs renown vs friendship
     ----------------------------------------------------------------
-    local standingName = "Unknown"
+    local standingName = UNKNOWN or L["Unknown"]
     local progress = ""
 
     if cfg and cfg.kind == "renown" then
-        if C_MajorFactions and C_MajorFactions.GetMajorFactionData then
-            local mf = C_MajorFactions.GetMajorFactionData(factionID)
-            if mf and mf.renownLevel then
-                standingName = string.format("Renown %d", mf.renownLevel)
-            else
-                standingName = "Renown ?"
-            end
-        else
-            standingName = "Renown ?"
-        end
+        local mf = C_MajorFactions and C_MajorFactions.GetMajorFactionData and
+                       C_MajorFactions.GetMajorFactionData(factionID)
+        standingName = HR.GetRenownLabel(mf and mf.renownLevel)
 
     elseif cfg and cfg.kind == "friendship" then
-        if C_GossipInfo and C_GossipInfo.GetFriendshipReputation then
-            local info = C_GossipInfo.GetFriendshipReputation(factionID)
-            if info then
-                standingName = info.reaction or info.friendshipText or "Friend"
-            else
-                standingName = "Friend"
-            end
-        else
-            standingName = "Friend"
-        end
+        local info = C_GossipInfo and C_GossipInfo.GetFriendshipReputation and
+                         C_GossipInfo.GetFriendshipReputation(factionID)
+        standingName = (info and (info.reaction or info.friendshipText)) or L["Friend"]
 
     else
         -- Standard reputation factions (or unknown standard, which will fall back to "Unknown")
-        if standingID > 0 then
-            standingName = _G["FACTION_STANDING_LABEL" .. standingID] or ("Standing " .. standingID)
-        else
-            standingName = "Unknown"
-        end
+        standingName = HR.GetStandingLabel(standingID)
 
         if data and current and curThresh and nextThresh and nextThresh > curThresh then
             local cur = current - curThresh
@@ -500,7 +486,7 @@ function HR.CreateRepLine(factionID, y)
             --
             if standingName and progress then
                 local mine = standingName .. progress
-                GameTooltip:AddLine("This character: " .. mine, 0.6, 0.6, 0.6)
+                GameTooltip:AddLine(L["This character: "] .. mine, 0.6, 0.6, 0.6)
             end
 
             --
@@ -508,7 +494,7 @@ function HR.CreateRepLine(factionID, y)
             --
             local myKey = UnitName("player") .. "-" .. GetRealmName()
             if best.sourceChar ~= myKey then
-                GameTooltip:AddLine("Best reputation on: " .. best.sourceChar, 0.6, 0.9, 1)
+                GameTooltip:AddLine(L["Best reputation on: "] .. best.sourceChar, 0.6, 0.9, 1)
             end
         else
             -- No best data yet: fallback to your normal behaviour
@@ -560,13 +546,9 @@ function HR.CreateRewardLine(factionID, reward, y)
     ----------------------------------------------------------------
     -- Item text / link
     ----------------------------------------------------------------
-    local itemName, itemLink
+    local itemName, itemLink = HR.GetItemNameAndLink(itemID)
 
-    if itemID and itemID > 0 then
-        itemName, itemLink = GetItemInfo(itemID)
-    end
-
-    local displayText = itemLink or itemName or reward.itemName or "Unknown item"
+    local displayText = itemLink or itemName or reward.itemName or L["Unknown item"]
 
     -- stash item info on the frame so clicks can use it
     frame.itemID = itemID
@@ -584,14 +566,14 @@ function HR.CreateRewardLine(factionID, reward, y)
     if unlocked then
         if collected == true then
             -- Either the API sees copies right now, or we've seen it once and cached it
-            status:SetText("Purchased")
+            status:SetText(L["Purchased"])
             status:SetTextColor(0.3, 1.0, 0.3) -- green
         else
             -- Either:
             --  - API says sum == 0 (could be never bought, OR fully placed and bugged), or
             --  - API is unavailable / returned something weird (collected == nil)
             -- From the user's POV, it's just "you can buy this, but we can't confirm ownership".
-            status:SetText("Available (*)")
+            status:SetText(L["Available (*)"])
             status:SetTextColor(1.0, 0.9, 0.3) -- yellow
         end
     else
@@ -637,11 +619,10 @@ function HR.CreateRewardLine(factionID, reward, y)
                     HousingRepsDB.purchasedItems[self.itemID] = true
                 end
 
-                local _, link = GetItemInfo(self.itemID)
+                local _, link = HR.GetItemNameAndLink(self.itemID)
                 link = link or ("item:" .. self.itemID)
 
-                print(string.format("|cff33ff99Housing Reps|r: Marked %s as purchased.",
-                    link or ("item:" .. self.itemID)))
+                print("|cff33ff99Housing Reps|r: " .. string.format(L["Marked %s as purchased."], link))
 
                 -- Rebuild so the line flips from "Available (*)" to "Purchased"
                 if HR.BuildUI then
@@ -655,7 +636,7 @@ function HR.CreateRewardLine(factionID, reward, y)
                 return
             end
 
-            local _, link = GetItemInfo(self.itemID)
+            local _, link = HR.GetItemNameAndLink(self.itemID)
             link = link or ("item:" .. self.itemID)
 
             if link then
@@ -715,13 +696,8 @@ function HR.BuildUI()
             return orderA < orderB
         end
 
-        -- Same expansion: sort alphabetically by name (fallback empty)
-        local da = C_Reputation and C_Reputation.GetFactionDataByID(a) or nil
-        local db = C_Reputation and C_Reputation.GetFactionDataByID(b) or nil
-        local nameA = da and da.name or ""
-        local nameB = db and db.name or ""
-
-        return nameA < nameB
+        -- Same expansion: sort alphabetically by (localized) name
+        return HR.GetFactionName(a) < HR.GetFactionName(b)
     end)
 
     ----------------------------------------------------------------
@@ -807,12 +783,10 @@ function HR.BuildUI()
                             done = 0,
                             total = 0
                         }
-                        local headerText
+                        local headerText = GetExpansionDisplayName(exp)
 
                         if stats.total > 0 then
-                            headerText = string.format("%s (%d/%d)", exp, stats.done, stats.total)
-                        else
-                            headerText = exp
+                            headerText = string.format("%s (%d/%d)", headerText, stats.done, stats.total)
                         end
 
                         y = HR.CreateExpansionHeader(exp, headerText, y)
