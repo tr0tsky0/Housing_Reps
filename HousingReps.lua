@@ -147,6 +147,9 @@ local function HR_SnapshotRepsForCurrentChar()
             kind = cfg.kind
         }
 
+        -- Save the client's name so characters that can't see this faction can show it
+        HR.RememberFactionName(factionID)
+
         if cfg.kind == "renown" then
             if C_MajorFactions and C_MajorFactions.GetMajorFactionData then
                 local data = C_MajorFactions.GetMajorFactionData(factionID)

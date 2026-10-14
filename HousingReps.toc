@@ -2,7 +2,7 @@
 ## Title: Housing Reputations
 ## Notes: Shows reputations that grant housing rewards
 ## Author: tr0tsky
-## Version: 1.6.5
+## Version: 1.6.6
 ## SavedVariables: HousingRepsDB
 
 locales.lua

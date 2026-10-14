@@ -33,11 +33,34 @@ local function IsUsableString(s)
     return true
 end
 
--- Faction name: standard, friendship and major factions each have their own API,
--- and Encounters (Delves/Prey) only answer to C_MajorFactions.
-function HR.GetFactionName(factionID)
-    local cfg = HOUSING_REP_CONFIG and HOUSING_REP_CONFIG[factionID]
+-------------------------------------------------------
+-- Saved name caches
+-- Some names are only visible to some characters (the current friendship rank,
+-- opposite-faction reps), so we save each one we see in HousingRepsDB. Names
+-- are tagged with the client language and dropped when it changes.
+-------------------------------------------------------
 
+local function GetNameCache(key, create)
+    local cache = HousingRepsDB and HousingRepsDB[key]
+    if cache and cache.locale ~= locale then
+        if not create then
+            return nil
+        end
+        -- Client language changed: names from the old locale are no use
+        wipe(cache)
+        cache.locale = locale
+    end
+    if not cache and create and HousingRepsDB then
+        cache = { locale = locale }
+        HousingRepsDB[key] = cache
+    end
+    return cache
+end
+
+-- Faction name: standard, friendship and major factions each have their own API,
+-- and Encounters (Delves/Prey) only answer to C_MajorFactions. Opposite-faction
+-- reps return nothing, so those come from the cache once an alt has seen them.
+local function GetFactionNameFromAPI(factionID)
     if C_Reputation and C_Reputation.GetFactionDataByID then
         local data = C_Reputation.GetFactionDataByID(factionID)
         if data and IsUsableString(data.name) then
@@ -59,6 +82,28 @@ function HR.GetFactionName(factionID)
         end
     end
 
+    return nil
+end
+
+function HR.RememberFactionName(factionID)
+    local name = GetFactionNameFromAPI(factionID)
+    if name then
+        GetNameCache("factionNames", true)[factionID] = name
+    end
+end
+
+function HR.GetFactionName(factionID)
+    local name = GetFactionNameFromAPI(factionID)
+    if name then
+        return name
+    end
+
+    local cache = GetNameCache("factionNames")
+    if cache and cache[factionID] then
+        return cache[factionID]
+    end
+
+    local cfg = HOUSING_REP_CONFIG and HOUSING_REP_CONFIG[factionID]
     return (cfg and cfg.label) or ("Faction " .. tostring(factionID))
 end
 
@@ -168,21 +213,14 @@ function HR.RememberFriendshipRankName(factionID, tier, name)
         return
     end
 
-    HousingRepsDB.friendshipRankNames = HousingRepsDB.friendshipRankNames or {}
-    local names = HousingRepsDB.friendshipRankNames
-    if names.locale ~= locale then
-        -- Client language changed: names from the old locale are no use
-        wipe(names)
-        names.locale = locale
-    end
-
+    local names = GetNameCache("friendshipRankNames", true)
     names[factionID] = names[factionID] or {}
     names[factionID][tier] = name
 end
 
 function HR.GetFriendshipRankName(factionID, tier, fallback)
-    local names = HousingRepsDB and HousingRepsDB.friendshipRankNames
-    if names and names.locale == locale and names[factionID] and names[factionID][tier] then
+    local names = GetNameCache("friendshipRankNames")
+    if names and names[factionID] and names[factionID][tier] then
         return names[factionID][tier]
     end
     return fallback
