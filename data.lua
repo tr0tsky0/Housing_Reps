@@ -1663,6 +1663,48 @@ HOUSING_REP_CONFIG = {
             requiredStanding = "Renown 7"
         },}
     },
+    [2838] = {
+        label = "Aqir Research Enclave",
+        kind = "standard",
+        expansion = "Midnight",
+        vendor = {
+            npcID = 266188,
+            name = "Estelia Archtender",
+            zone = "Silvermoon City",
+            uiMapID = 2393,
+            x = 39.2,
+            y = 80.2
+        },
+        rewards = {{
+            itemID = 275869,
+            itemName = "Nourished Brood Eggs",
+            requiredStanding = "Friendly"
+        }, {
+            itemID = 275873,
+            itemName = "Dormant Brood Egg",
+            requiredStanding = "Friendly"
+        }, {
+            itemID = 275867,
+            itemName = "Nourished Brood Egg Cluster",
+            requiredStanding = "Honored"
+        }, {
+            itemID = 275879,
+            itemName = "Dormant Brood Egg Cluster",
+            requiredStanding = "Honored"
+        }, {
+            itemID = 275865,
+            itemName = "Nourished Clutch of Brood Eggs",
+            requiredStanding = "Revered"
+        }, {
+            itemID = 275871,
+            itemName = "Dormant Clutch of Brood Eggs",
+            requiredStanding = "Revered"
+        }, {
+            itemID = 280050,
+            itemName = "Aqir Hunter's Trophy",
+            requiredStanding = "Exalted"
+        }}
+    },
     [2772] = {
         label = "Zul'jarra's Forces",
         kind = "renown",
