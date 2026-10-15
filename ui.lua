@@ -195,6 +195,9 @@ frame.title:SetText(L["Housing Reputations"])
 local close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
 close:SetPoint("TOPRIGHT", -5, -5)
 
+local discord = HR.CreateDiscordButton(frame)
+discord:SetPoint("RIGHT", close, "LEFT", -2, 0)
+
 -- Checkbox state comes from SavedVariables, which don't exist yet while this file
 -- runs. Always go through the live HousingRepsDB table (never a cached local), and
 -- let HR.ApplySettingsToUI set the initial ticks once the saved data has loaded.
